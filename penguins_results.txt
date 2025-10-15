@@ -1,3 +1,3 @@
 Penguin Report
 Average flipper length in milimeters for Adelie penguins is 189.95364238410596
-Maximum mass in grams for Adelie penguins is 4775.0
+Maximum mass in grams for penguins on Biscoe Island is 6300.0

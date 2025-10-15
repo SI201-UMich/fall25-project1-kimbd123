@@ -32,7 +32,6 @@ def load_penguins(filename):
           for row in reader:
                penguins.append(row)
           return penguins
-#print(load_penguins('penguins.csv'))
 
 def filter_adelie(penguins):
       adelie_penguins = []
@@ -51,25 +50,35 @@ def avg_adelie_flipper(adelie_penguins):
             return None
      return sum(flippers) / len(flippers)
 
-def max_adelie_bodymass(adelie_penguins):
+def filter_biscoe(penguins):
+     biscoe_island = []
+     for penguin in penguins:
+          if penguin["island"] == "Biscoe":
+               biscoe_island.append(penguin)
+     return biscoe_island
+
+def max_biscoe_bodymass(biscoe_island):
      masses = []
-     for penguin in adelie_penguins:
-          body_mass = penguin["body_mass_g"]
+     for penguin in biscoe_island:
+          body_mass = penguin.get("body_mass_g", "")
           if body_mass and body_mass.upper() != "NA":
                masses.append(float(body_mass))
+     if not masses:
+          return None
      return max(masses)
 
 def main():
      penguins = load_penguins('penguins.csv')
-     adelie_penguins = filter_adelie(penguins)
-     avg = avg_adelie_flipper(adelie_penguins)
-     maximum = max_adelie_bodymass(adelie_penguins)
+     adelie = filter_adelie(penguins)
+     avg = avg_adelie_flipper(adelie)
+     biscoe = filter_biscoe(penguins)
+     maximum = max_biscoe_bodymass(biscoe)
      print(avg)
      print(maximum)
      with open("penguins_results.txt", "w") as f:
           f.write("Penguin Report\n")
           f.write(f"Average flipper length in milimeters for Adelie penguins is {avg}\n")
-          f.write(f"Maximum mass in grams for Adelie penguins is {maximum}")
+          f.write(f"Maximum mass in grams for penguins on Biscoe Island is {maximum}")
 
 class TestPenguinCalculations(unittest.TestCase):
       def test1_average_flipper_normal(self):
@@ -105,7 +114,42 @@ class TestPenguinCalculations(unittest.TestCase):
                 {"flipper_length_mm": "NA"} 
            ]
            self.assertEqual(avg_adelie_flipper(flippers), None)
+
+      def test1_max_mass_normal(self):
+            masses = [
+                  {"body_mass_g": "3400"},
+                  {"body_mass_g": "3600"},
+                  {"body_mass_g": "3800"}
+            ]
+            self.assertEqual(max_biscoe_bodymass(masses), 3800)
+      
+      def test2_max_mass_normal(self):
+           masses = [
+                {"body_mass_g": "3300"},
+                {"body_mass_g": "4650"},
+                {"body_mass_g": "3650"},
+                {"sex": "male"},
+                {"sex": "female"}
+           ]
+           self.assertEqual(max_biscoe_bodymass(masses), 4650)
+      def test1_max_mass_edge(self):
+           masses = [
+                {"bill_depth_mm": "NA"},
+                {"body_mass_g": "NA"},
+                {"body_mass_g": "4660"}
+           ]
+           self.assertEqual(max_biscoe_bodymass(masses), 4660)
+
+      def test2_max_mass(self):
+           masses = [
+                {"body_mass_g": "NA"},
+                {"bill_depth_mm": "NA"},
+                {"bill_length_mm": "NA"}
+           ]
+           self.assertEqual(max_biscoe_bodymass(masses), None)
            
+           
+main()
 unittest.main()
 
            
