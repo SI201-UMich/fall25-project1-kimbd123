@@ -1,3 +1,8 @@
+#Name: Brandon Kim
+#uniqname: kimbd
+#ID: 69330016
+#AI: I did use Gen AI to help me decompose the calculations. I also used Gen AI to help me fix errors in my code.
+
 import csv
 import unittest
 
@@ -5,8 +10,8 @@ def col_name(filename):
     with open(filename) as f:
         header = csv.reader(f)
         names = next(header)
+        f.close()
         return names
-print(col_name('penguins.csv'))
 
 def sample_row(filename):
     with open(filename) as f:
@@ -14,7 +19,6 @@ def sample_row(filename):
         rows = list(reader)
         f.close()
         return rows[2]
-print(sample_row('penguins.csv'))
 
 def num_rows(filename):
       with open(filename) as f:
@@ -22,15 +26,16 @@ def num_rows(filename):
             count = 0
             for row in rows:
                   count += 1
+            f.close()
             return count
-print(num_rows('penguins.csv'))
 
 def load_penguins(filename):
      penguins = []
      with open(filename) as f:
           reader = csv.DictReader(f)
           for row in reader:
-               penguins.append(row)
+            penguins.append(row)
+          f.close()
           return penguins
 
 def filter_adelie(penguins):
@@ -67,35 +72,36 @@ def max_biscoe_bodymass(biscoe_island):
           return None
      return max(masses)
 
+def penguins_results(avg, maximum):
+     with open("penguins_results.txt", "w") as f:
+          f.write("Penguin Report\n")
+          f.write(f"Average flipper length in milimeters for Adelie penguins is {avg}\n")
+          f.write(f"Maximum mass in grams for penguins on Biscoe Island is {maximum}")
+
+
 def main():
      penguins = load_penguins('penguins.csv')
      adelie = filter_adelie(penguins)
      avg = avg_adelie_flipper(adelie)
      biscoe = filter_biscoe(penguins)
      maximum = max_biscoe_bodymass(biscoe)
-     print(avg)
-     print(maximum)
-     with open("penguins_results.txt", "w") as f:
-          f.write("Penguin Report\n")
-          f.write(f"Average flipper length in milimeters for Adelie penguins is {avg}\n")
-          f.write(f"Maximum mass in grams for penguins on Biscoe Island is {maximum}")
-
+     penguins_results(avg, maximum)
 class TestPenguinCalculations(unittest.TestCase):
       def test1_average_flipper_normal(self):
             flippers = [
-                 {"flipper_length_mm": "181"},
-                 {"flipper_length_mm": "186"},
-                  {"flipper_length_mm": "195"},
+                 {"flipper_length_mm": '181'},
+                 {"flipper_length_mm": '186'},
+                  {"flipper_length_mm": '195'},
                   {"sex": "male"}
             ]
             self.assertAlmostEqual(avg_adelie_flipper(flippers), 187.33, places = 2)
 
       def test2_average_flipper_normal(self):
             flippers = [
-                 {"flipper_length_mm": "193"},
-                 {"flipper_length_mm": "190"},
-                 {"flipper_length_mm": "186"},
-                 {"bill_length_mm": "36.7"}
+                 {"flipper_length_mm": '193'},
+                 {"flipper_length_mm": '190'},
+                 {"flipper_length_mm": '186'},
+                 {"bill_length_mm": '36.7'}
             ]
             self.assertAlmostEqual(avg_adelie_flipper(flippers), 189.67, places = 2)
       
@@ -103,7 +109,7 @@ class TestPenguinCalculations(unittest.TestCase):
            flippers = [
                 {"flipper_length_mm": "NA"},
                 {"bill_depth_mm": "NA"},
-                {"flipper_length_mm": "190"}
+                {"flipper_length_mm": '190'}
            ]
            self.assertEqual(avg_adelie_flipper(flippers), 190)
 
@@ -117,17 +123,17 @@ class TestPenguinCalculations(unittest.TestCase):
 
       def test1_max_mass_normal(self):
             masses = [
-                  {"body_mass_g": "3400"},
-                  {"body_mass_g": "3600"},
-                  {"body_mass_g": "3800"}
+                  {"body_mass_g": '3400'},
+                  {"body_mass_g": '3600'},
+                  {"body_mass_g": '3800'}
             ]
             self.assertEqual(max_biscoe_bodymass(masses), 3800)
       
       def test2_max_mass_normal(self):
            masses = [
-                {"body_mass_g": "3300"},
-                {"body_mass_g": "4650"},
-                {"body_mass_g": "3650"},
+                {"body_mass_g": '3300'},
+                {"body_mass_g": '4650'},
+                {"body_mass_g": '3650'},
                 {"sex": "male"},
                 {"sex": "female"}
            ]
@@ -136,7 +142,7 @@ class TestPenguinCalculations(unittest.TestCase):
            masses = [
                 {"bill_depth_mm": "NA"},
                 {"body_mass_g": "NA"},
-                {"body_mass_g": "4660"}
+                {"body_mass_g": '4660'}
            ]
            self.assertEqual(max_biscoe_bodymass(masses), 4660)
 
